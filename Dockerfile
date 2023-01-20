@@ -1,7 +1,24 @@
 FROM nvidia/cuda:11.7.1-devel-ubuntu22.04
 
-RUN apt-get update && \
-  apt-get install git python3 python3-pip python-is-python3 -y
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV DEBIAN_FRONTEND noninteractive\
+    SHELL=/bin/bash
+RUN apt-get update --yes && \
+    # - apt-get upgrade is run to patch known vulnerabilities in apt-get packages as
+    #   the ubuntu base image is rebuilt too seldom sometimes (less than once a month)
+    apt-get upgrade --yes && \
+    apt install --yes --no-install-recommends\
+    git\
+    wget\
+    curl\
+    bash\
+    openssh-server &&\
+    python3 &&\
+    python3-pip &&\
+    python-is-python3 &&\
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    echo "fr_FR.UTF-8 UTF-8" > /etc/locale.gen
 
 RUN pip install --upgrade pip wheel
 
@@ -56,5 +73,8 @@ RUN mkdir -p /home/huggingface/.cache/huggingface \
   && mkdir -p /home/huggingface/input \
   && mkdir -p /home/huggingface/output
 
-#COPY docker-entrypoint.py /usr/local/bin
-#ENTRYPOINT [ "docker-entrypoint.py" ]
+ADD start.sh /
+
+RUN chmod +x /start.sh
+
+CMD [ "/start.sh" ]
