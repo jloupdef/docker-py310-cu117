@@ -10,6 +10,7 @@ then
     echo $PUBLIC_KEY >> authorized_keys
     chmod 700 -R ~/.ssh
     cd /
+    service ssh start
 fi
 
 sleep infinity

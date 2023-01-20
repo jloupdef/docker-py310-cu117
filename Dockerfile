@@ -58,26 +58,18 @@ RUN pip install --upgrade pip wheel &&\
     pip install *.whl &&\
     pip cache purge
 
-RUN service ssh start
+WORKDIR /root
 
-RUN useradd -m huggingface
-
-USER huggingface
-
-WORKDIR /home/huggingface
-
-ADD --chown=huggingface:huggingface https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference-v.yaml v2-inference-v.yaml
-ADD --chown=huggingface:huggingface https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml v2-inference.yaml
-ADD --chown=huggingface:huggingface https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-midas-inference.yaml v2-midas-inference.yaml
-ADD --chown=huggingface:huggingface https://raw.githubusercontent.com/CompVis/stable-diffusion/main/configs/stable-diffusion/v1-inference.yaml v1-inference.yaml
+ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference-v.yaml v2-inference-v.yaml
+ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml v2-inference.yaml
+ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-midas-inference.yaml v2-midas-inference.yaml
+ADD https://raw.githubusercontent.com/CompVis/stable-diffusion/main/configs/stable-diffusion/v1-inference.yaml v1-inference.yaml
 
 ENV USE_TORCH=1
 
-RUN mkdir -p /home/huggingface/.cache/huggingface \
-  && mkdir -p /home/huggingface/input \
-  && mkdir -p /home/huggingface/output
+RUN mkdir -p /root/.cache/huggingface
 
-ADD --chown=huggingface:huggingface start.sh /
+ADD start.sh /
 
 RUN chmod +x /start.sh
 
