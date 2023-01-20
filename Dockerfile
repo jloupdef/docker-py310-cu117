@@ -13,16 +13,20 @@ RUN apt-get update --yes && \
     wget\
     curl\
     bash\
-    openssh-server &&\
-    python3 &&\
-    python3-pip &&\
+    openssh-server\
+    python3\
+    python3-pip\
     python-is-python3 &&\
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "fr_FR.UTF-8 UTF-8" > /etc/locale.gen
 
-RUN pip install --upgrade pip wheel
+ENV FORCE_CUDA="1"
 
-RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu117 \
+ARG TORCH_CUDA_ARCH_LIST="8.0"
+ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
+
+RUN pip install --upgrade pip wheel &&\
+    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu117 \
         torch==1.13.1+cu117 \
         torchvision==0.14.1+cu117 \
         diffusers[torch]==0.11.1 \
@@ -45,16 +49,11 @@ RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/wh
         colorama \
         ninja \
         triton \
-        pyre-extensions
-
-ENV FORCE_CUDA="1"
-
-ARG TORCH_CUDA_ARCH_LIST="8.0"
-ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
-
-RUN pip install --no-cache-dir "git+https://github.com/huggingface/transformers@main#egg=transformers"
-
-RUN pip install --no-cache-dir "git+https://github.com/facebookresearch/xformers.git@main#egg=xformers"
+        pyre-extensions &&\
+    pip install --no-cache-dir "git+https://github.com/huggingface/transformers@main#egg=transformers" &&\
+    pip install --no-cache-dir "git+https://github.com/facebookresearch/xformers.git@main#egg=xformers" &&\
+    pip cache remove * &&\
+    pip cache purge
 
 RUN useradd -m huggingface
 
