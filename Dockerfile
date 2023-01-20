@@ -58,6 +58,8 @@ RUN pip install --upgrade pip wheel &&\
     pip install *.whl &&\
     pip cache purge
 
+RUN service ssh start
+
 RUN useradd -m huggingface
 
 USER huggingface
