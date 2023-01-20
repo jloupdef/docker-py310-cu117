@@ -2,8 +2,10 @@ FROM nvidia/cuda:11.7.1-devel-ubuntu22.04
 
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 ENV DEBIAN_FRONTEND noninteractive\
     SHELL=/bin/bash
+
 RUN apt-get update --yes && \
     # - apt-get upgrade is run to patch known vulnerabilities in apt-get packages as
     #   the ubuntu base image is rebuilt too seldom sometimes (less than once a month)
@@ -15,6 +17,7 @@ RUN apt-get update --yes && \
     bash\
     openssh-server\
     python3\
+    python3-dev\
     python3-pip\
     python-is-python3 &&\
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
@@ -25,8 +28,10 @@ ENV FORCE_CUDA="1"
 ARG TORCH_CUDA_ARCH_LIST="8.0"
 ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
 
+COPY whls/*.whl /
+
 RUN pip install --upgrade pip wheel &&\
-    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu117 \
+    pip install --extra-index-url https://download.pytorch.org/whl/cu117 \
         torch==1.13.1+cu117 \
         torchvision==0.14.1+cu117 \
         diffusers[torch]==0.11.1 \
@@ -50,9 +55,7 @@ RUN pip install --upgrade pip wheel &&\
         ninja \
         triton \
         pyre-extensions &&\
-    pip install --no-cache-dir "git+https://github.com/huggingface/transformers@main#egg=transformers" &&\
-    pip install --no-cache-dir "git+https://github.com/facebookresearch/xformers.git@main#egg=xformers" &&\
-    pip cache remove * &&\
+    pip install *.whl &&\
     pip cache purge
 
 RUN useradd -m huggingface
@@ -72,7 +75,7 @@ RUN mkdir -p /home/huggingface/.cache/huggingface \
   && mkdir -p /home/huggingface/input \
   && mkdir -p /home/huggingface/output
 
-ADD start.sh /
+ADD --chown=huggingface:huggingface start.sh /
 
 RUN chmod +x /start.sh
 

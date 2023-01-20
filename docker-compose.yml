@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  local-diffusers:
+    build:
+      context: .
+    volumes:
+    - ./whls:/home/huggingface/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
