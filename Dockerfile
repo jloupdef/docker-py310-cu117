@@ -12,6 +12,7 @@ RUN apt-get update --yes && \
     apt-get upgrade --yes && \
     apt install --yes --no-install-recommends\
     git\
+    git-lfs\
     wget\
     curl\
     bash\
@@ -20,7 +21,7 @@ RUN apt-get update --yes && \
     python3-dev\
     python3-pip\
     python-is-python3 &&\
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* &&\
     echo "fr_FR.UTF-8 UTF-8" > /etc/locale.gen
 
 ENV FORCE_CUDA="1"
@@ -67,10 +68,12 @@ ADD https://raw.githubusercontent.com/CompVis/stable-diffusion/main/configs/stab
 
 ENV USE_TORCH=1
 
-RUN mkdir -p /root/.cache/huggingface
 
 ADD start.sh /
+ADD init_everydream.sh /root/
 
-RUN chmod +x /start.sh
+RUN mkdir -p /root/.cache/huggingface &&\
+    chmod +x /start.sh &&\
+    git lfs install
 
 CMD [ "/start.sh" ]
