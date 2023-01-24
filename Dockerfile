@@ -17,7 +17,7 @@ RUN apt-get update --yes && \
     curl\
     bash\
     nano\
-    vi\
+    vim\
     openssh-server\
     python3\
     python3-dev\
