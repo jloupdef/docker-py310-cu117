@@ -13,10 +13,6 @@ wget https://raw.githubusercontent.com/CompVis/stable-diffusion/main/configs/sta
 mkdir ckpt_cache
 pushd ckpt_cache
 
-mkdir <repo> && cd <repo>
-git init
-git remote add –f <name> <url>
-
 model=stable-diffusion-2-1-base
 #model=stable-diffusion-2-depth
 
