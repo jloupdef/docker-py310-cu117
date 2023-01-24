@@ -71,7 +71,7 @@ ADD init_everydream.sh /root/
 
 RUN mkdir -p /root/.cache/huggingface &&\
     chmod +x /start.sh &&\
-    chmod +x /init_everydream.sh &&\
+    chmod +x /root/init_everydream.sh &&\
     git lfs install
 
 CMD [ "/start.sh" ]
