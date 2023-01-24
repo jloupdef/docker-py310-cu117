@@ -16,6 +16,8 @@ RUN apt-get update --yes && \
     wget\
     curl\
     bash\
+    nano\
+    vi\
     openssh-server\
     python3\
     python3-dev\
@@ -61,11 +63,6 @@ RUN pip install --upgrade pip wheel &&\
 
 WORKDIR /root
 
-ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference-v.yaml v2-inference-v.yaml
-ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml v2-inference.yaml
-ADD https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-midas-inference.yaml v2-midas-inference.yaml
-ADD https://raw.githubusercontent.com/CompVis/stable-diffusion/main/configs/stable-diffusion/v1-inference.yaml v1-inference.yaml
-
 ENV USE_TORCH=1
 
 
@@ -74,6 +71,7 @@ ADD init_everydream.sh /root/
 
 RUN mkdir -p /root/.cache/huggingface &&\
     chmod +x /start.sh &&\
+    chmod +x /init_everydream.sh &&\
     git lfs install
 
 CMD [ "/start.sh" ]
