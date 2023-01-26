@@ -5,7 +5,9 @@ services:
     build:
       context: .
     volumes:
-    - ./whls:/home/huggingface/output
+#    - ./whls:/home/huggingface/output
+    - ./EveryDream2trainer:/workspace/EveryDream2trainer
+    - ./images:/workspace/images
     deploy:
       resources:
         reservations:

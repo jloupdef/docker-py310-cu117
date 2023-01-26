@@ -37,16 +37,17 @@ RUN pip install --upgrade pip wheel &&\
     pip install --extra-index-url https://download.pytorch.org/whl/cu117 \
         torch==1.13.1+cu117 \
         torchvision==0.14.1+cu117 \
-        diffusers[torch]==0.11.1 \
+        diffusers[torch]==0.12.0 \
+        transformers==4.26.0 \
         onnxruntime==1.13.1 \
         accelerate \
         scipy \
         safetensors \
-        pynvml>=11.4.1 \
-        bitsandbytes>=0.36.0.post2 \
-        ftfy>=6.1.1 \
-        aiohttp>=3.8.3 \
-        tensorboard>=2.11.2 \
+        "pynvml>=11.4.1" \
+        "bitsandbytes>=0.36.0.post2" \
+        "ftfy>=6.1.1" \
+        "aiohttp>=3.8.3" \
+        "tensorboard>=2.11.2" \
         protobuf==3.20.1 \
         wandb==0.13.9 \
         pyre-extensions==0.0.30 \
@@ -67,11 +68,10 @@ ENV USE_TORCH=1
 
 
 ADD start.sh /
-ADD init_everydream.sh /root/
+ADD init_everydream.sh init_model.sh init_images.sh  /root/
 
 RUN mkdir -p /root/.cache/huggingface &&\
-    chmod +x /start.sh &&\
-    chmod +x /root/init_everydream.sh &&\
+    chmod +x /start.sh /root/*.sh &&\
     git lfs install
 
 CMD [ "/start.sh" ]
